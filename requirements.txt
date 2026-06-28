@@ -1,0 +1,14 @@
+transformers>=4.40.0
+datasets[audio]>=2.19.0
+accelerate>=0.29.0
+schedulefree>=1.2.0
+sounddevice>=0.4.6
+jiwer>=3.0.4
+pydub>=0.25.1
+librosa>=0.10.1
+onnx>=1.16.0
+onnxruntime>=1.17.0
+onnxscript
+pyyaml>=6.0.1
+torchaudio
+edge-tts

@@ -1,0 +1,24 @@
+dataset:
+  name: "facebook/multilingual_librispeech"
+  language: "italian"
+  raw_dir: "./data/raw"
+  segmented_dir: "./data/mixed_italian_dataset" # Combined MLS + Synthetic hybrid dataset
+  mls_segmented_dir: "./data/mls_italian_segmented" # Intermediate MLS segmented directory
+  quick_test: true # Set to true to use a tiny slice of the dataset for fast verification in sandbox
+  quick_test_samples: 20 # Number of samples for quick verification
+
+model:
+  name: "UsefulSensors/moonshine-streaming-tiny"
+  save_dir: "./results-custom-it"
+  onnx_dir: "./results-custom-it/onnx"
+
+training:
+  batch_size: 4
+  epochs: 5
+  learning_rate: 3.0e-5
+  weight_decay: 0.01
+  warmup_steps: 10
+  gradient_accumulation_steps: 2
+  fp16: true
+  eval_every_steps: 50
+  save_every_steps: 50

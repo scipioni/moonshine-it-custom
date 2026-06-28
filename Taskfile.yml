@@ -1,0 +1,84 @@
+version: '3'
+
+# Load environment variables from .env file
+dotenv: ['.env']
+
+# Global default variables
+vars:
+  CONFIG: configs/test_config.yaml
+
+tasks:
+  dataset:download:
+    desc: "Download Multilingual LibriSpeech Italian Dataset"
+    cmds:
+      - .venv/bin/python scripts/download_dataset.py --config {{.CONFIG}}
+
+  dataset:prepare:
+    desc: "Perform VAD and segment the downloaded raw audio dataset"
+    cmds:
+      - .venv/bin/python scripts/prepare_dataset.py --config {{.CONFIG}}
+
+  dataset:synthetic:
+    desc: "Generate high-quality synthetic Italian voice commands using edge-tts"
+    cmds:
+      - .venv/bin/python scripts/generate_synthetic_assistant.py --config {{.CONFIG}}
+
+  dataset:mix:
+    desc: "Merge MLS segmented dataset with synthetic assistant dataset into a hybrid training corpus"
+    cmds:
+      - .venv/bin/python scripts/mix_datasets.py --config {{.CONFIG}}
+
+  train:
+    desc: "Train the custom Italian Moonshine Streaming Tiny model on CUDA (recoverable)"
+    cmds:
+      - .venv/bin/python train_italian.py --config {{.CONFIG}}
+
+  export:
+    desc: "Export the best fine-tuned PyTorch checkpoint to ONNX format"
+    cmds:
+      - .venv/bin/python scripts/export_onnx.py --config {{.CONFIG}}
+
+  doctor:
+    desc: "Check and diagnose workstation GPU hardware and CUDA acceleration status"
+    cmds:
+      - .venv/bin/python scripts/doctor.py
+
+  test:pipeline:
+    desc: "Run end-to-end testing pipeline on hybrid mixed dataset (MLS + Synthetic) using test config"
+    cmds:
+      - task: doctor
+      - task: dataset:download
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - task: dataset:prepare
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - task: dataset:synthetic
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - task: dataset:mix
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - task: train
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - task: export
+        vars: { CONFIG: "configs/test_config.yaml" }
+      - echo "=================================================="
+      - echo "🎉 SUCCESS! Full End-to-End ASR Hybrid Pipeline Verified!"
+      - echo "=================================================="
+
+  train:full:
+    desc: "Run full-scale production dataset downloading, mixing, and training"
+    cmds:
+      - task: doctor
+      - task: dataset:download
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - task: dataset:prepare
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - task: dataset:synthetic
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - task: dataset:mix
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - task: train
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - task: export
+        vars: { CONFIG: "configs/full_config.yaml" }
+      - echo "=================================================="
+      - echo "🎉 SUCCESS! Full-Scale Production ASR Hybrid Training Complete!"
+      - echo "=================================================="

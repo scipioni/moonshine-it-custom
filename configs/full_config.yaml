@@ -1,0 +1,24 @@
+dataset:
+  name: "facebook/multilingual_librispeech"
+  language: "italian"
+  raw_dir: "./data/raw"
+  segmented_dir: "./data/mixed_italian_dataset" # Combined MLS + Synthetic hybrid dataset
+  mls_segmented_dir: "./data/mls_italian_segmented" # Intermediate MLS segmented directory
+  quick_test: false # Set to false to run full dataset downloads, preprocessing, and training
+  quick_test_samples: 0 # Ignored when quick_test is false
+
+model:
+  name: "UsefulSensors/moonshine-streaming-tiny"
+  save_dir: "./results-custom-it"
+  onnx_dir: "./results-custom-it/onnx"
+
+training:
+  batch_size: 16 # Increased batch size for full-scale production training on local RTX 3060
+  epochs: 3 # Standard 3 epochs for full-scale training
+  learning_rate: 5.0e-5
+  weight_decay: 0.01
+  warmup_steps: 500
+  gradient_accumulation_steps: 2 # Effective batch size of 32 (optimized for 12GB VRAM)
+  fp16: true
+  eval_every_steps: 500
+  save_every_steps: 500
