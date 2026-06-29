@@ -38,6 +38,11 @@ tasks:
     cmds:
       - .venv/bin/python scripts/export_onnx.py --config {{.CONFIG}}
 
+  export:moonshine:
+    desc: "Package and export the fine-tuned model for use with official moonshine-ai/moonshine"
+    cmds:
+      - .venv/bin/python scripts/export_to_moonshine.py
+
   doctor:
     desc: "Check and diagnose workstation GPU hardware and CUDA acceleration status"
     cmds:
@@ -59,6 +64,7 @@ tasks:
         vars: { CONFIG: "configs/test_config.yaml" }
       - task: export
         vars: { CONFIG: "configs/test_config.yaml" }
+      - task: export:moonshine
       - echo "=================================================="
       - echo "🎉 SUCCESS! Full End-to-End ASR Hybrid Pipeline Verified!"
       - echo "=================================================="
@@ -79,6 +85,7 @@ tasks:
         vars: { CONFIG: "configs/full_config.yaml" }
       - task: export
         vars: { CONFIG: "configs/full_config.yaml" }
+      - task: export:moonshine
       - echo "=================================================="
       - echo "🎉 SUCCESS! Full-Scale Production ASR Hybrid Training Complete!"
       - echo "=================================================="

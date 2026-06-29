@@ -13,7 +13,7 @@ model:
   onnx_dir: "./results-custom-it/onnx"
 
 training:
-  batch_size: 16 # Increased batch size for full-scale production training on local RTX 3060
+  batch_size: 12 # 16 Increased batch size for full-scale production training on local RTX 3060
   epochs: 3 # Standard 3 epochs for full-scale training
   learning_rate: 5.0e-5
   weight_decay: 0.01
